@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       msg: "",
-      birthday: "18012019",
+      birthday: "17051988",
       winners: [],
       stats: {},
       period: "",
@@ -57,8 +57,8 @@ export default {
         let handNumbers = [...Array(70).keys()];
         this.seed = seed;
         this.numerology = x;
-        let randomLeft = seedrandom.xor4096(seed);
-        let randomRight = seedrandom.xor4096(seed * (x / 10));
+        let randomLeft = seedrandom.xor4096(seed * x);
+        let randomRight = seedrandom.xor4096(today);
         let cloneLeft = randomLeft();
         let cloneRight = randomRight();
         let randomBoth = this.moveInArray(
@@ -106,8 +106,8 @@ export default {
           let date = moment.unix(today).format();
           this.winners.push({
             date,
-            lottery: [...lottery, randomLotteryBonus],
-            hand: [...hand, randomHandBonus],
+            lottery: [...lottery, parseInt(randomLotteryBonus)],
+            hand: [...hand, parseInt(randomHandBonus)],
             matches,
             bonus,
           });
@@ -161,16 +161,23 @@ export default {
       const twoNumbersBonus = this.winners.filter(
         (item) => item.bonus === true && item.matches.length === 2
       ).length;
-      const twoNumbers = this.winners.filter(
-        (item) => item.bonus === false && item.matches.length === 2
-      ).length;
       const numberBonus = this.winners.filter(
         (item) => item.bonus === true && item.matches.length === 1
       ).length;
       const bonus = this.winners.filter(
         (item) => item.bonus === true && item.matches.length < 1
       ).length;
-      const luck = (bonus / this.period / 0.04).toFixed(2) * 100 + "%";
+      let luck = jackpots > 0 ? jackpots * (302575350 / this.period) : 1;
+      luck *= fiveNumbers > 0 ? fiveNumbers * (12607306 / this.period) : 1;
+      luck *=
+        fourNumbersBonus > 0 ? fourNumbersBonus * (931000 / this.period) : 1;
+      luck *= fourNumbers > 0 ? fourNumbers * (38792 / this.period) : 1;
+      luck *=
+        threeNumbersBonus > 0 ? threeNumbersBonus * (14547 / this.period) : 1;
+      luck *= threeNumbers > 0 ? threeNumbers * (606 / this.period) : 1;
+      luck *= twoNumbersBonus > 0 ? twoNumbersBonus * (693 / this.period) : 0;
+      luck *= numberBonus > 0 ? numberBonus * (89 / this.period) : 0;
+      luck *= bonus > 0 ? bonus * (25 / this.period) : 1;
 
       this.stats = {
         jackpots,
@@ -180,10 +187,9 @@ export default {
         threeNumbersBonus,
         threeNumbers,
         twoNumbersBonus,
-        twoNumbers,
         numberBonus,
         bonus,
-        luck,
+        luck: (luck * 100).toFixed(0) + "%",
       };
     },
   },
