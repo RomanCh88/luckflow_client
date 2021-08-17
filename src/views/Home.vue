@@ -57,29 +57,27 @@ export default {
         let handNumbers = [...Array(70).keys()];
         this.seed = seed;
         this.numerology = x;
-        let randomLeft = seedrandom.xor4096(seed * x);
-        let randomRight = seedrandom.xor4096(today);
+        let randomLeft = seedrandom.alea(seed * x);
+        let randomRight = seedrandom.alea(today);
         let cloneLeft = randomLeft();
         let cloneRight = randomRight();
         let randomBoth = this.moveInArray(
           (
             randomLeft().toString().substring(2).slice(0, 10) +
             randomRight().toString().substring(2).slice(0, 10)
-          )
-            .replaceAll(".", "")
-            .match(/.{1,2}/g)
+          ).match(/.{1,2}/g)
         );
 
         let randomLotteryBonus = (
-          ((cloneLeft.toString().charAt(10) +
-            cloneRight.toString().charAt(10)) /
+          ((cloneLeft.toString().substring(2).charAt(10) +
+            cloneRight.toString().substring(2).charAt(10)) /
             99) *
           25
         ).toFixed(0);
 
         let randomHandBonus = (
-          ((cloneLeft.toString().charAt(11) +
-            cloneRight.toString().charAt(11)) /
+          ((cloneLeft.toString().substring(2).charAt(11) +
+            cloneRight.toString().substring(2).charAt(11)) /
             99) *
           25
         ).toFixed(0);
@@ -177,7 +175,7 @@ export default {
       luck *= threeNumbers > 0 ? threeNumbers * (606 / this.period) : 1;
       luck *= twoNumbersBonus > 0 ? twoNumbersBonus * (693 / this.period) : 0;
       luck *= numberBonus > 0 ? numberBonus * (89 / this.period) : 0;
-      luck *= bonus > 0 ? bonus * (25 / this.period) : 1;
+      luck *= bonus > 0 ? bonus * (37 / this.period) : 1;
 
       this.stats = {
         jackpots,
